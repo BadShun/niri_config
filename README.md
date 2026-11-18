@@ -17,6 +17,16 @@ cd niri_config
 
 应用后在登录界面的会话菜单选择 **Niri**。已有桌面会话也可以从终端运行 `niri` 来预览窗口模式。
 
+### 保留已有的软件设置
+
+用 `--skip-config` 跳过指定软件的配置，可以重复传入。下面的命令会保留已有的输入法和终端设置。
+
+```sh
+./apply-config.sh --skip-config fcitx5 --skip-config alacritty
+```
+
+可用名称为 `alacritty`、`fcitx5`、`rofi`、`waybar` 和 `xwaylandvideobridge`。跳过 Waybar 或 Rofi 时，Niri 会通过该软件的默认路径读取你的配置。跳过 Fcitx5 时，Niri 仍会自动启动输入法，并使用你已有的输入法设置。
+
 ## 配置内容
 
 - Niri 窗口四角圆角、Chrome 半宽打开、终端毛玻璃，以及窗口模式与独立会话使用不同修饰键的快捷键面板。VMware 客户机额外应用软件光标设置。

@@ -2,14 +2,31 @@
 set -euo pipefail
 umask 077
 
-if [[ ${1-} == --help ]]; then
-    printf '%s\n' '用法：./apply-config.sh' '安装当前用户的配置、壁纸和字体，并备份即将被替换的文件。'
-    exit 0
-fi
-if (( $# != 0 )); then
-    printf '未知参数：%s\n' "$1" >&2
-    exit 2
-fi
+declare -A skipped=()
+while (( $# > 0 )); do
+    case $1 in
+        --help)
+            cat <<'EOF'
+用法：./apply-config.sh [--skip-config 软件]…
+安装当前用户的配置、壁纸和字体，并备份即将被替换的文件。
+
+--skip-config 软件    保留该软件的配置。可重复指定。
+可选软件：alacritty、fcitx5、rofi、waybar、xwaylandvideobridge
+示例：./apply-config.sh --skip-config fcitx5 --skip-config alacritty
+EOF
+            exit 0
+            ;;
+        --skip-config)
+            case ${2-} in
+                alacritty|fcitx5|rofi|waybar|xwaylandvideobridge) skipped[$2]=1 ;;
+                '') printf '%s\n' '--skip-config 需要一个软件名称。' >&2; exit 2 ;;
+                *) printf '无法跳过此配置：%s\n' "$2" >&2; exit 2 ;;
+            esac
+            shift 2
+            ;;
+        *) printf '未知参数：%s\n' "$1" >&2; exit 2 ;;
+    esac
+done
 if (( EUID == 0 )); then
     printf '%s\n' '请用运行桌面会话的用户执行 ./apply-config.sh。' >&2
     exit 1
@@ -75,22 +92,40 @@ install -Dm644 -- "$repo/assets/wallpapers/dusk-mountains.png" "$staging/config/
 mkdir -p -- "$staging/data/$font_dir"
 cp -- "$repo/assets/fonts/JetBrainsMono/"* "$staging/data/$font_dir/"
 
+niri_config="$staging/config/niri/config.kdl"
 if command -v systemd-detect-virt >/dev/null && [[ $(systemd-detect-virt --vm || true) == vmware ]]; then
-    printf '\n' >> "$staging/config/niri/config.kdl"
-    cat "$staging/config/niri/vmware-cursor.kdl" >> "$staging/config/niri/config.kdl"
+    printf '\n' >> "$niri_config"
+    cat "$staging/config/niri/vmware-cursor.kdl" >> "$niri_config"
 fi
-niri validate -c "$staging/config/niri/config.kdl"
 
 files=(
     config/niri/fcitx5-start.sh config/niri/hotkeys.py config/niri/hotkeys.css
     config/niri/wallpapers/dusk-mountains.png
-    config/waybar/config.jsonc config/waybar/style.css config/rofi/niri-glass.rasi
-    config/alacritty/alacritty.toml config/fcitx5/config config/fcitx5/profile
-    config/autostart/org.kde.xwaylandvideobridge.desktop
     "data/$font_dir/JetBrainsMono[wght].ttf" "data/$font_dir/JetBrainsMono_Italic[wght].ttf"
     "data/$font_dir/OFL.txt"
-    config/niri/config.kdl
 )
+
+if [[ -n ${skipped[waybar]-} ]]; then
+    sed -i '/^spawn-sh-at-startup r#"exec waybar -c /c\spawn-at-startup "waybar"' "$niri_config"
+else
+    files+=(config/waybar/config.jsonc config/waybar/style.css)
+fi
+if [[ -n ${skipped[rofi]-} ]]; then
+    sed -i -E 's/(\{ )spawn-sh r#"exec rofi -no-config -theme .* -show drun"#(; \})$/\1spawn "rofi" "-show" "drun"\2/' "$niri_config"
+else
+    files+=(config/rofi/niri-glass.rasi)
+fi
+if [[ -z ${skipped[alacritty]-} ]]; then
+    files+=(config/alacritty/alacritty.toml)
+fi
+if [[ -z ${skipped[fcitx5]-} ]]; then
+    files+=(config/fcitx5/config config/fcitx5/profile)
+fi
+if [[ -z ${skipped[xwaylandvideobridge]-} ]]; then
+    files+=(config/autostart/org.kde.xwaylandvideobridge.desktop)
+fi
+files+=(config/niri/config.kdl)
+niri validate -c "$niri_config"
 
 changes=()
 for key in "${files[@]}"; do
@@ -126,6 +161,9 @@ done
 
 fc-cache -f -- "$data_home/$font_dir"
 printf '%s\n' '配置已应用。重新进入 Niri 会话即可加载启动项。'
+if (( ${#skipped[@]} > 0 )); then
+    printf '已保留 %s 的设置。\n' "${!skipped[@]}"
+fi
 if [[ -n $backup ]]; then
     printf '备份目录：%s\n' "$backup"
 fi
