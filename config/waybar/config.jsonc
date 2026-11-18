@@ -1,0 +1,68 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 36,
+    "margin-top": 8,
+    "margin-left": 12,
+    "margin-right": 12,
+    "margin-bottom": 4,
+    "spacing": 7,
+    "reload_style_on_change": true,
+
+    "modules-left": ["niri/workspaces", "niri/window"],
+    "modules-center": ["clock"],
+    "modules-right": ["group/status"],
+
+    "niri/workspaces": {
+        "format": "{value}",
+        "disable-markup": true
+    },
+    "niri/window": {
+        "format": "{title}",
+        "icon": true,
+        "icon-size": 15,
+        "max-length": 26,
+        "separate-outputs": true
+    },
+    "clock": {
+        "format": "{0:%H:%M}  <span foreground='#AAB3CC' weight='normal'>{0:%m/%d}</span>",
+        "tooltip-format": "<tt>{calendar}</tt>",
+        "calendar": {
+            "format": {
+                "today": "<span color='#C4B5FD'><b>{}</b></span>"
+            }
+        }
+    },
+    "tray": {
+        "icon-size": 15
+    },
+    "group/status": {
+        "orientation": "horizontal",
+        "modules": ["tray", "network", "pulseaudio"]
+    },
+    "network": {
+        "format-wifi": "\uf1eb",
+        "format-ethernet": "\uf796",
+        "format-linked": "\uf0c1",
+        "format-disconnected": "\uf127",
+        "format-disabled": "\uf127",
+        "tooltip-format-wifi": "{essid} · {signalStrength}%\n{ipaddr}",
+        "tooltip-format-ethernet": "{ifname}\n{ipaddr}",
+        "tooltip-format-linked": "{ifname} · 未获取 IP 地址",
+        "tooltip-format-disconnected": "网络未连接",
+        "tooltip-format-disabled": "无线网络已关闭"
+    },
+    "pulseaudio": {
+        "format": "<span font_family='Font Awesome 6 Free' weight='900'>{icon}</span>  {volume}%",
+        "format-muted": "<span font_family='Font Awesome 6 Free' weight='900'>\uf6a9</span>  静音",
+        "format-icons": {
+            "headphone": "\uf025",
+            "headset": "\uf025",
+            "default": ["\uf026", "\uf027", "\uf028"]
+        },
+        "tooltip-format": "{desc}\n滚轮调节音量 · 点击切换静音",
+        "scroll-step": 5,
+        "max-volume": 100,
+        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+    }
+}

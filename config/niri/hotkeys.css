@@ -1,0 +1,38 @@
+window#niri-hotkeys {
+    background-color: rgba(22, 26, 41, 0.79);
+    border: 1px solid rgba(185, 198, 236, 0.33);
+    border-radius: 22px;
+    color: #e7ebf7;
+    font: 13px "Noto Sans CJK SC", "Noto Sans", sans-serif;
+}
+
+#niri-hotkeys .panel {
+    background-color: transparent;
+    padding: 21px;
+}
+
+#niri-hotkeys viewport {
+    background: transparent;
+}
+
+#niri-hotkeys .card {
+    background-color: rgba(35, 41, 62, 0.67);
+    border: 1px solid rgba(185, 198, 236, 0.17);
+    border-radius: 14px;
+    padding: 12px 14px;
+}
+
+#niri-hotkeys .section {
+    color: #c4b5fd;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+#niri-hotkeys .key {
+    background: rgba(196, 181, 253, 0.12);
+    border: 1px solid rgba(196, 181, 253, 0.21);
+    border-radius: 7px;
+    color: #e4dbff;
+    font: 600 12px "JetBrains Mono", monospace;
+    padding: 3px 7px;
+}

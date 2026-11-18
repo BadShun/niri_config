@@ -1,0 +1,127 @@
+@define-color surface rgba(22, 26, 41, 0.94);
+@define-color outline rgba(185, 198, 236, 0.20);
+@define-color text #e7ebf7;
+@define-color secondary #aab3cc;
+@define-color accent #c4b5fd;
+
+* {
+    min-height: 0;
+    border: 0;
+    font-family: "Noto Sans", "Noto Sans CJK SC", sans-serif;
+    font-size: 13px;
+}
+
+window#waybar {
+    background: transparent;
+    color: @text;
+}
+
+#workspaces,
+#window,
+#clock,
+#status {
+    background-color: @surface;
+    border: 1px solid @outline;
+    border-radius: 12px;
+}
+
+#workspaces {
+    padding: 3px;
+}
+
+#workspaces button {
+    min-width: 20px;
+    margin: 0 1px;
+    padding: 0 6px;
+    background: transparent;
+    box-shadow: none;
+    text-shadow: none;
+    color: @secondary;
+    border-radius: 8px;
+    transition: background-color 140ms ease, color 140ms ease;
+}
+
+#workspaces button label {
+    font-family: "JetBrains Mono", "Noto Sans CJK SC", monospace;
+    font-weight: 600;
+}
+
+#workspaces button.empty {
+    color: #8590ad;
+}
+
+#workspaces button:hover,
+#workspaces button.active {
+    background-color: #34364e;
+    color: @text;
+}
+
+#workspaces button.focused {
+    background-color: @accent;
+    color: #201735;
+}
+
+#workspaces button.urgent {
+    background-color: #f2a6aa;
+    color: #381e29;
+}
+
+#window {
+    padding: 0 11px;
+    color: @secondary;
+    font-weight: 500;
+}
+
+window#waybar.empty #window {
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+#clock {
+    padding: 0 14px;
+    color: @text;
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+}
+
+#status {
+    padding: 3px 10px;
+}
+
+#tray image,
+#network {
+    margin-right: 8px;
+}
+
+#network {
+    color: #9fdfd0;
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+}
+
+#network.disconnected,
+#network.disabled,
+#pulseaudio.muted {
+    color: @secondary;
+}
+
+#pulseaudio {
+    color: @accent;
+    font-weight: 600;
+}
+
+#pulseaudio:hover {
+    color: @text;
+}
+
+tooltip {
+    background-color: #1c2031;
+    border: 1px solid @outline;
+    border-radius: 10px;
+}
+
+tooltip label {
+    padding: 5px 7px;
+    color: @text;
+}

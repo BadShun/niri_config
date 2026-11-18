@@ -1,0 +1,4 @@
+// Composite the cursor into the frame to work around cursor ghosting on VMware SVGA.
+debug {
+    disable-cursor-plane
+}

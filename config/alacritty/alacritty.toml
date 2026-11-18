@@ -1,0 +1,6 @@
+[window]
+opacity = 0.74
+padding = { x = 12, y = 10 }
+
+[font.normal]
+family = "JetBrains Mono"
